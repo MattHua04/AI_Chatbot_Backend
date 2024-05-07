@@ -12,9 +12,10 @@ const getState = asyncHandler(async (req, res) => {
 })
 
 const createState = asyncHandler(async (req, res) => {
-    const {sourceId, song, input, playState, controlPlayState, volume} = req.body
+    const {sourceId, songRequest, input, playState, controlPlayState, volume} = req.body
+    console.log(req.body)
     if (!sourceId
-        || !song
+        || !(songRequest === '' || songRequest.length)
         || !(input === '' || input.length)
         || !(playState === 0 || playState === 1)
         || !(controlPlayState >= -1 && controlPlayState <= 1)
@@ -28,7 +29,7 @@ const createState = asyncHandler(async (req, res) => {
         return res.status(403).json({message: 'Forbidden'})
     }
 
-    const stateObject = {song, input, playState, controlPlayState, volume}
+    const stateObject = {songRequest, input, playState, controlPlayState, volume}
     
     const state = await Spotify.create(stateObject)
     if (state) {
@@ -39,9 +40,9 @@ const createState = asyncHandler(async (req, res) => {
 })
 
 const updateState = asyncHandler(async (req, res) => {
-    const {sourceId, song, input, playState, controlPlayState, volume} = req.body
+    const {sourceId, songRequest, input, playState, controlPlayState, volume} = req.body
     if (!sourceId
-        || !song
+        || !(songRequest === '' || songRequest.length)
         || !(input === '' || input.length)
         || !(playState === 0 || playState === 1)
         || !(controlPlayState >= -1 && controlPlayState <= 1)
@@ -61,7 +62,7 @@ const updateState = asyncHandler(async (req, res) => {
         return res.status(404).json({message: 'Spotify state not found'})
     }
 
-    state.song = song
+    state.songRequest = songRequest
     state.input = input
     state.playState = playState
     state.controlPlayState = controlPlayState
