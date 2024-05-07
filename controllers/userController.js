@@ -46,7 +46,8 @@ const updateUser = asyncHandler(async (req, res) => {
 
     const sourceUser = await User.findById(sourceId).exec()
     const isAdmin = sourceUser?.roles.includes('Admin')
-    if (!isAdmin) {
+    const isDemo = sourceUser?.roles.includes('Demo')
+    if (!isAdmin || isDemo) {
         return res.status(403).json({message: 'Forbidden'})
     }
 
@@ -88,6 +89,10 @@ const deleteUser = asyncHandler(async (req, res) => {
 
     const sourceUser = await User.findById(sourceId).exec()
     const isAdmin = sourceUser?.roles.includes('Admin')
+    const isDemo = sourceUser?.roles.includes('Demo')
+    if (isDemo) {
+        return res.status(403).json({message: 'Forbidden'})
+    }
 
     const conversations = await Conversation.find({user: id}).lean().exec()
     if (!isAdmin && conversations) {
