@@ -30,7 +30,7 @@ const createUserConversation = asyncHandler(async (req, res) => {
     if (!owner?.active) {
         return res.status(403).json({message: 'Forbidden'})
     }
-    const duplicate = await Conversation.findOne({title}).lean().exec()
+    const duplicate = await Conversation.findOne({'user': user, 'title': title}).lean().exec()
     if (duplicate) {
         return res.status(409).json({message: 'Duplicate conversation'})
     }
