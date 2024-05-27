@@ -7,7 +7,7 @@ const spotifySchema = new mongoose.Schema({
     },
     songRequest: {
         type: [String],
-        default: ['', '']
+        default: ['', '', '']
     },
     input: {
         type: String,
