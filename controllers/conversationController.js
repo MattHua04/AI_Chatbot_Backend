@@ -1,23 +1,39 @@
 const User = require('../models/User')
 const Conversation = require('../models/Conversation')
 const asyncHandler = require('express-async-handler')
+const zlib = require('zlib')
 
 const getUserConversations = asyncHandler(async (req, res) => {
     const user = req.query.user
     if (!user) {
-        return res.status(400).json({message: 'All fields are required'})
+        return res.status(400).json({ message: 'All fields are required' })
     }
 
     let conversations
-    if (user == "all") {
+    if (user === "all") {
         conversations = await Conversation.find().lean().exec()
     } else {
-        conversations = await Conversation.find({user: user}).lean().exec()
+        conversations = await Conversation.find({ user: user }).lean().exec()
     }
-    
+
     if (!conversations?.length) {
-        return res.status(400).json({message: 'User has no conversations'})
+        return res.status(400).json({ message: 'User has no conversations' })
     }
+
+    // Decompress the content for each conversation
+    conversations = conversations.map(conversation => {
+        if (conversation.content) {
+            try {
+                const decompressedContent = zlib.inflateSync(Buffer.from(conversation.content, 'base64')).toString('utf-8')
+                conversation.content = JSON.parse(decompressedContent)
+            } catch (error) {
+                console.log(error)
+            }
+            return conversation
+        }
+        return conversation
+    })
+
     res.json(conversations)
 })
 
@@ -78,7 +94,10 @@ const updateUserConversation = asyncHandler(async (req, res) => {
 
     conversation.user = user
     conversation.title = title
-    conversation.content = content
+    
+    // Compress the content array using zlib compression
+    const compressedContent = zlib.deflateSync(JSON.stringify(content)).toString('base64')
+    conversation.content = compressedContent
 
     const updatedConversation = await conversation.save()
 

@@ -13,8 +13,8 @@ const conversationSchema = new mongoose.Schema(
             required: true
         },
         content: {
-            type: [[String]],
-            default: [],
+            type: String,
+            default: '',
             required: false
         }
     },
