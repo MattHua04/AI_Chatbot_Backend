@@ -12,11 +12,16 @@ const conversationSchema = new mongoose.Schema(
             type: String,
             required: true
         },
-        content: {
+        content: { // Only used if a conversation is smaller than a certain size
+            type: [[String]],
+            default: [],
+            required: false
+        },
+        compressed_content: {
             type: String,
             default: '',
             required: false
-        }
+        },
     },
     {
         timestamps: true

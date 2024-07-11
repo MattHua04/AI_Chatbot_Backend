@@ -20,11 +20,11 @@ const getUserConversations = asyncHandler(async (req, res) => {
         return res.status(400).json({ message: 'User has no conversations' })
     }
 
-    // Decompress the content for each conversation
+    // Decompress the content for each conversation if needed
     conversations = conversations.map(conversation => {
-        if (conversation.content) {
+        if (conversation.compressed_content) {
             try {
-                const decompressedContent = zlib.inflateSync(Buffer.from(conversation.content, 'base64')).toString('utf-8')
+                const decompressedContent = zlib.inflateSync(Buffer.from(conversation.compressed_content, 'base64')).toString('utf-8')
                 conversation.content = JSON.parse(decompressedContent)
             } catch (error) {
                 console.log(error)
@@ -95,9 +95,17 @@ const updateUserConversation = asyncHandler(async (req, res) => {
     conversation.user = user
     conversation.title = title
     
-    // Compress the content array using zlib compression
-    const compressedContent = zlib.deflateSync(JSON.stringify(content)).toString('base64')
-    conversation.content = compressedContent
+    // Compress the content array using zlib compression if needed
+    MAX_CONTENT_SIZE = 16000
+    const bytes = Buffer.byteLength(JSON.stringify(content), 'utf8')
+    if (bytes > MAX_CONTENT_SIZE) {
+        conversation.content = []
+        const compressedContent = zlib.deflateSync(JSON.stringify(content)).toString('base64')
+        conversation.compressed_content = compressedContent
+    } else {
+        conversation.content = content
+        conversation.compressed_content = ''
+    }
 
     const updatedConversation = await conversation.save()
 
