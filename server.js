@@ -1,11 +1,12 @@
 require('dotenv').config()
 const express = require('express')
 const app = express()
-const path = require('path') 
+const path = require('path')
 const {logger, logEvents} = require('./middleware/logger')
 const errorHandler = require('./middleware/errorHandler')
 const cookiePaser = require('cookie-parser')
 const cors = require('cors')
+const bodyParser = require('body-parser')
 const connectDB = require('./config/dbConn')
 const mongoose = require('mongoose')
 const corsOptions = require('./config/corsOptions')
@@ -18,6 +19,9 @@ connectDB()
 app.use(logger)
 
 app.use(cors(corsOptions))
+
+app.use(bodyParser.json({ limit: '50mb' }))
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }))
 
 app.use(express.json())
 
