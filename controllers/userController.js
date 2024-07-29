@@ -95,9 +95,10 @@ const deleteUser = asyncHandler(async (req, res) => {
     }
 
     const conversations = await Conversation.find({user: id}).lean().exec()
-    if (!isAdmin && conversations) {
-        return res.status(400).json({message: 'User has conversations. Delete conversations first'})
-    } else if (isAdmin && conversations) {
+    if (!isAdmin && conversations.length > 0) {
+        await Conversation.deleteMany({user: id}).exec()
+        // return res.status(400).json({message: 'User has conversations. Delete conversations first'})
+    } else if (isAdmin && conversations.length > 0) {
         await Conversation.deleteMany({user: id}).exec()
     }
 
