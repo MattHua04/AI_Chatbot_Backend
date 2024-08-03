@@ -2,20 +2,45 @@ const mongoose = require('mongoose')
 
 const spotifySchema = new mongoose.Schema({
     currentSong: {
-        type: [String],
-        default: ['', '']
+        type: {
+            title: String,
+            uri: String,
+            image: String,
+            artistsOrOwner: [String],
+        },
+        default: {
+            title: '',
+            uri: '',
+            image: '',
+            artistsOrOwner: [''],
+        }
     },
     songRequest: {
-        type: [String],
-        default: ['', '', '']
+        type: {
+            title: String,
+            uri: String,
+            image: String,
+            artistsOrOwner: [String],
+        },
+        default: {
+            title: '',
+            uri: '',
+            image: '',
+            artistsOrOwner: [''],
+        }
     },
     input: {
         type: String,
         default: ''
     },
     searchResults: {
-        type: [[String]],
-        default: [],
+        type: [{
+            title: String,
+            uri: String,
+            image: String,
+            artist: String
+        }],
+        default: []
     },
     playState: {
         type: Number,

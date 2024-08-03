@@ -13,9 +13,8 @@ const getState = asyncHandler(async (req, res) => {
 
 const createState = asyncHandler(async (req, res) => {
     const {sourceId, songRequest, input, playState, controlPlayState, volume} = req.body
-    console.log(req.body)
     if (!sourceId
-        || !(songRequest === '' || songRequest.length)
+        || !(songRequest)
         || !(input === '' || input.length)
         || !(playState === 0 || playState === 1)
         || !(controlPlayState >= -1 && controlPlayState <= 1)
@@ -41,8 +40,9 @@ const createState = asyncHandler(async (req, res) => {
 
 const updateState = asyncHandler(async (req, res) => {
     const {sourceId, songRequest, input, playState, controlPlayState, volume} = req.body
+    console.log(req.body)
     if (!sourceId
-        || !(songRequest === '' || songRequest.length)
+        || !(songRequest)
         || !(input === '' || input.length)
         || !(playState === 0 || playState === 1)
         || !(controlPlayState >= -1 && controlPlayState <= 1)
