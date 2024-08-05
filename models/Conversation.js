@@ -22,6 +22,11 @@ const conversationSchema = new mongoose.Schema(
             default: '',
             required: false
         },
+        respond: {
+            type: Boolean,
+            default: false,
+            required: false
+        }
     },
     {
         timestamps: true

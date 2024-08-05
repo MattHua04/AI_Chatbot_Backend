@@ -38,7 +38,7 @@ const getUserConversations = asyncHandler(async (req, res) => {
 })
 
 const createUserConversation = asyncHandler(async (req, res) => {
-    const {user, title, content} = req.body
+    const {user, title, content, respond} = req.body
     if (!user || !title) {
         return res.status(400).json({message: 'All fields are required'})
     }
@@ -54,7 +54,8 @@ const createUserConversation = asyncHandler(async (req, res) => {
     const conversationObject = {
         user,
         title,
-        content
+        content,
+        respond
     }
     
     const conversation = await Conversation.create(conversationObject)
@@ -66,7 +67,7 @@ const createUserConversation = asyncHandler(async (req, res) => {
 })
 
 const updateUserConversation = asyncHandler(async (req, res) => {
-    const {id, user, title, content} = req.body
+    const {id, user, title, content, respond} = req.body
     if (!id || !user || !title || !content) {
         return res.status(400).json({message: 'All fields are required'})
     }
@@ -94,6 +95,7 @@ const updateUserConversation = asyncHandler(async (req, res) => {
 
     conversation.user = user
     conversation.title = title
+    conversation.respond = respond
     
     // Compress the content array using zlib compression if needed
     MAX_CONTENT_SIZE = 16000
