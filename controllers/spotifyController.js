@@ -31,13 +31,12 @@ const createState = asyncHandler(async (req, res) => {
 })
 
 const updateState = asyncHandler(async (req, res) => {
-    const {sourceId, songRequest, input, requestPlayState, requestControlPlayState, volume} = req.body
-    console.log(req.body)
+    const {sourceId, songRequest, input, requestPlayState, controlPlayState, volume} = req.body
     if (!sourceId
         || !(songRequest)
         || !(input === '' || input.length)
         || requestPlayState && !(requestPlayState === 0 || requestPlayState === 1)
-        || requestControlPlayState && !(requestControlPlayState >= -1 && requestControlPlayState <= 1)
+        || !(controlPlayState >= -1 && controlPlayState <= 1)
         || !(volume >= 0 && volume <= 100)) {
         return res.status(400).json({message: 'All fields are required'})
     }
@@ -57,7 +56,7 @@ const updateState = asyncHandler(async (req, res) => {
     state.songRequest = songRequest
     state.input = input
     state.requestPlayState = requestPlayState
-    state.requestControlPlayState = requestControlPlayState
+    state.controlPlayState = controlPlayState
     state.volume = volume
 
     const updatedState = await state.save()
