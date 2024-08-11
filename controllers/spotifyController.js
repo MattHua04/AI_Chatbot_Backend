@@ -12,15 +12,7 @@ const getState = asyncHandler(async (req, res) => {
 })
 
 const createState = asyncHandler(async (req, res) => {
-    const {sourceId, songRequest, input, playState, controlPlayState, volume} = req.body
-    if (!sourceId
-        || !(songRequest)
-        || !(input === '' || input.length)
-        || !(playState === 0 || playState === 1)
-        || !(controlPlayState >= -1 && controlPlayState <= 1)
-        || !(volume >= 0 && volume <= 100)) {
-        return res.status(400).json({message: 'All fields are required'})
-    }
+    const {sourceId} = req.body
 
     const sourceUser = await User.findById(sourceId).exec()
     const isAdmin = sourceUser?.roles.includes('Admin')
@@ -28,7 +20,7 @@ const createState = asyncHandler(async (req, res) => {
         return res.status(403).json({message: 'Forbidden'})
     }
 
-    const stateObject = {songRequest, input, playState, controlPlayState, volume}
+    const stateObject = {}
     
     const state = await Spotify.create(stateObject)
     if (state) {
@@ -39,13 +31,13 @@ const createState = asyncHandler(async (req, res) => {
 })
 
 const updateState = asyncHandler(async (req, res) => {
-    const {sourceId, songRequest, input, playState, controlPlayState, volume} = req.body
+    const {sourceId, songRequest, input, requestPlayState, requestControlPlayState, volume} = req.body
     console.log(req.body)
     if (!sourceId
         || !(songRequest)
         || !(input === '' || input.length)
-        || !(playState === 0 || playState === 1)
-        || !(controlPlayState >= -1 && controlPlayState <= 1)
+        || requestPlayState && !(requestPlayState === 0 || requestPlayState === 1)
+        || requestControlPlayState && !(requestControlPlayState >= -1 && requestControlPlayState <= 1)
         || !(volume >= 0 && volume <= 100)) {
         return res.status(400).json({message: 'All fields are required'})
     }
@@ -64,8 +56,8 @@ const updateState = asyncHandler(async (req, res) => {
 
     state.songRequest = songRequest
     state.input = input
-    state.playState = playState
-    state.controlPlayState = controlPlayState
+    state.requestPlayState = requestPlayState
+    state.requestControlPlayState = requestControlPlayState
     state.volume = volume
 
     const updatedState = await state.save()

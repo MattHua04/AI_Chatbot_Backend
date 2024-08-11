@@ -42,9 +42,17 @@ const spotifySchema = new mongoose.Schema({
         }],
         default: []
     },
+    requestPlayState: {
+        type: Number,
+        default: null
+    },
     playState: {
         type: Number,
         default: 0
+    },
+    requestControlPlayState: {
+        type: Number,
+        default: null
     },
     controlPlayState: {
         type: Number,
