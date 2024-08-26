@@ -15,7 +15,7 @@ const createState = asyncHandler(async (req, res) => {
     const {sourceId} = req.body
 
     const sourceUser = await User.findById(sourceId).exec()
-    const isAdmin = sourceUser?.roles.includes('Admin')
+    const isAdmin = sourceUser?.role === 'Admin'
     if (!isAdmin) {
         return res.status(403).json({message: 'Forbidden'})
     }
@@ -42,7 +42,7 @@ const updateState = asyncHandler(async (req, res) => {
     }
 
     const sourceUser = await User.findById(sourceId).exec()
-    const isAdmin = sourceUser?.roles.includes('Admin')
+    const isAdmin = sourceUser?.role === 'Admin'
     if (!isAdmin) {
         return res.status(403).json({message: 'Forbidden'})
     }

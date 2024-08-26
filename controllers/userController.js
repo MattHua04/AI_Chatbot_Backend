@@ -12,8 +12,8 @@ const getAllUsers = asyncHandler(async (req, res) => {
 })
 
 const createNewUser = asyncHandler(async (req, res) => {
-    const {username, password, roles, active} = req.body
-    if (!username || !password || !Array.isArray(roles) || !roles.length) {
+    const {username, password, role, active} = req.body
+    if (!username || !password || !role) {
         return res.status(400).json({message: 'All fields are required'})
     }
     
@@ -27,7 +27,7 @@ const createNewUser = asyncHandler(async (req, res) => {
     const userObject = {
         username,
         "password": hashedPassword,
-        roles,
+        role,
         "active": active === false || active === true ? active : false,
     }
     const user = await User.create(userObject)
@@ -39,20 +39,20 @@ const createNewUser = asyncHandler(async (req, res) => {
 })
 
 const updateUser = asyncHandler(async (req, res) => {
-    const {sourceId, id, username, roles, password, active} = req.body
-    if (!sourceId || !id || !username ||!Array.isArray(roles) || !roles.length) {
+    const {sourceId, id, username, role, password, active} = req.body
+    if (!sourceId || !id || !username ||!role) {
         return res.status(400).json({message: 'All fields are required'})
     }
 
     const sourceUser = await User.findById(sourceId).exec()
-    const isAdmin = sourceUser?.roles.includes('Admin')
-    const isDemo = sourceUser?.roles.includes('Demo')
+    const isAdmin = sourceUser?.role === 'Admin'
+    const isDemo = sourceUser?.role === 'Demo'
     if (!isAdmin || isDemo) {
         return res.status(403).json({message: 'Forbidden'})
     }
 
     const user = await User.findById(id).exec()
-    const targetUserIsAdmin = user?.roles.includes('Admin')
+    const targetUserIsAdmin = user?.role === 'Admin'
 
     if (!user) {
         return res.status(404).json({message: 'User not found'})
@@ -64,7 +64,7 @@ const updateUser = asyncHandler(async (req, res) => {
     }
 
     user.username = username
-    user.roles = roles
+    user.role = role
 
     if (password) {
         user.password = await bcrypt.hash(password, 10)
@@ -88,8 +88,8 @@ const deleteUser = asyncHandler(async (req, res) => {
     }
 
     const sourceUser = await User.findById(sourceId).exec()
-    const isAdmin = sourceUser?.roles.includes('Admin')
-    const isDemo = sourceUser?.roles.includes('Demo')
+    const isAdmin = sourceUser?.role === 'Admin'
+    const isDemo = sourceUser?.role === 'Demo'
     if (isDemo) {
         return res.status(403).json({message: 'Forbidden'})
     }

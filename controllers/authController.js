@@ -28,7 +28,7 @@ const login = asyncHandler(async (req, res) => {
         {
             "UserInfo": {
                 "username": foundUser.username,
-                "roles": foundUser.roles,
+                "role": foundUser.role,
                 "active": foundUser.active,
             }
         },
@@ -75,7 +75,7 @@ const refresh = (req, res) => {
                 {
                     "UserInfo": {
                         "username": foundUser.username,
-                        "roles": foundUser.roles,
+                        "role": foundUser.role,
                         "active": foundUser.active,
                     }
                 },
@@ -104,7 +104,7 @@ const update = asyncHandler(async (req, res) => {
         {
             "UserInfo": {
                 "username": foundUser.username,
-                "roles": foundUser.roles,
+                "role": foundUser.role,
                 "active": foundUser.active,
             }
         },
